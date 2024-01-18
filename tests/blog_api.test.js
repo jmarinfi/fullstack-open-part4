@@ -92,6 +92,52 @@ test('if the likes property is missing from the request, it will default to the 
     expect(likes[likes.length - 1]).toBe(0)
 })
 
+test('if the title property is missing from the request, the backend responds to the request with the status code 400 Bad Request', async () => {
+    const newBlog = {
+        author: "test author",
+        url: "test url",
+        likes: 0
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(initialBlogs.length)
+})
+
+test('if the url property is missing from the request, the backend responds to the request with the status code 400 Bad Request', async () => {
+    const newBlog = {
+        title: "test blog",
+        author: "test author",
+        likes: 0
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(initialBlogs.length)
+})
+
+test('if the title and url properties are missing from the request data, the backend responds to the request with the status code 400 Bad Request', async () => {
+    const newBlog = {
+        author: "test author",
+        likes: 0
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(initialBlogs.length)
+}, 10000)
 
 afterAll(async () => {
     await mongoose.connection.close()
